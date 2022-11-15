@@ -1,3 +1,207 @@
+# Tugas 8
+
+## Jelaskan perbedaan Navigator.push dan Navigator.pushReplacement.
+## Sebutkan widget apa saja yang kamu pakai di proyek kali ini dan jelaskan fungsinya.
+- Center
+- Column
+- Container
+## Sebutkan jenis-jenis event yang ada pada Flutter (contoh: onPressed).
+- onPressed
+- onLongPressed
+## Jelaskan bagaimana cara kerja Navigator dalam "mengganti" halaman dari aplikasi Flutter.
+Navigator mengelola stack berisi routes. Setiap kali method Navigator.push atau method-method serupa lainnya dipanggil, routes baru akan ditambahkan ke dalam stack tersebut.
+## Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas.
+1. Menambahkan drawer/hamburger menu pada app yang telah dibuat sebeumnya.  
+Menggunakan kode 
+```
+drawer: Drawer(
+  child: Column(
+    children: [
+      ...
+          );
+        },
+      ),
+    ],
+  ),
+),
+```
+
+2. Menambahkan tiga tombol navigasi pada drawer/hamburger.
+Menambahkan kode berikut pada drawer
+```
+ListTile(
+  title: const Text('Data Budget'),
+  onTap: () {
+    // Route menu ke halaman form
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+          builder: (context) => MyDataPage(
+                lst: widget.lst,
+                addData: widget.addData,
+              )),
+```
+
+3. Menambahkan halaman form
+Menambahkan elemen input dengan tipe data String berupa judul budget.
+Menambahkan kode berikut pada form.dart
+```
+Padding(
+  // Menggunakan padding sebesar 8 pixels
+  padding: const EdgeInsets.all(8.0),
+  child: TextFormField(
+    decoration: InputDecoration(
+      hintText: "Contoh: Beli Sate Pacil",
+      labelText: "Judul",
+      // Menambahkan icon agar lebih intuitif
+      // icon: const Icon(Icons.people),
+      // Menambahkan circular border agar lebih rapi
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(5.0),
+      ),
+    ),
+    // Menambahkan behavior saat nama diketik
+    onChanged: (String? value) {
+      setState(() {
+        judul = value!;
+      });
+    },
+    // Menambahkan behavior saat data disimpan
+    onSaved: (String? value) {
+      setState(() {
+        judul = value!;
+      });
+    },
+    // Validator sebagai validasi form
+    validator: (String? value) {
+      if (value == null || value.isEmpty) {
+        return 'Judul tidak boleh kosong!';
+      }
+      return null;
+    },
+  ),
+),
+```
+
+Menambahkan elemen input dengan tipe data int berupa nominal budget.
+Menambahkan kode berikut pada form.dart
+```
+Padding(
+  // Menggunakan padding sebesar 8 pixels
+  padding: const EdgeInsets.all(8.0),
+  child: TextFormField(
+    keyboardType: TextInputType.number,
+    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+    decoration: InputDecoration(
+      hintText: "Contoh: 15000",
+      labelText: "Nominal",
+      // Menambahkan icon agar lebih intuitif
+      // icon: const Icon(Icons.people),
+      // Menambahkan circular border agar lebih rapi
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(5.0),
+      ),
+    ),
+    // Menambahkan behavior saat nama diketik
+    onChanged: (String? value) {
+      setState(() {
+        nominal = int.parse(value!);
+      });
+    },
+    // Menambahkan behavior saat data disimpan
+    onSaved: (String? value) {
+      setState(() {
+        nominal = int.parse(value!);
+      });
+    },
+    // Validator sebagai validasi form
+    validator: (String? value) {
+      if (value == null || value.isEmpty) {
+        return 'Masukan nominal!';
+      }
+
+      // Cek apakah input berupa angka
+      if (int.tryParse(value) == null) {
+        return 'Nominal harus berupa angka!';
+      }
+      
+      return null;
+    },
+  ),
+  ),
+```
+
+Menambahkan elemen dropdown yang berisi tipe budget dengan pilihan pemasukan dan pengeluaran.
+Menambahkan kode berikut pada form.dart
+```
+ListTile(
+  trailing: DropdownButton(
+  value: strJenis,
+  icon: const Icon(Icons.keyboard_arrow_down),
+  items: lstJenis.map((String items) {
+    return DropdownMenuItem(
+      value: items,
+      child: Text(items),
+    );
+  }).toList(),
+  onChanged: (String? newValue) {
+    setState(() {
+      strJenis = newValue!;
+    });
+  },
+),
+),
+```
+
+Menambahkan button untuk menyimpan budget.
+Menambahkan kode berikut pada form.dart
+```
+TextButton(
+  child: const Text(
+    "Simpan",
+    style: TextStyle(color: Colors.white),
+  ),
+  style: ButtonStyle(
+    backgroundColor: MaterialStateProperty.all(Colors.blue),
+  ),
+  onPressed: () {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      // Menambahkan data ke list
+      widget.addData(DataBudget(judul, nominal, strJenis));
+      // Menampilkan snackbar
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Data berhasil disimpan!'),
+        ),
+      );
+      // Mengosongkan form
+      _formKey.currentState!.reset();
+    }
+  },
+),
+```
+
+4. Menambahkan halaman data budget
+Menampilkan semua judul, nominal, dan tipe budget yang telah ditambahkan pada form.
+Menambahkan kode berikut pada data.dart
+```
+padding: const EdgeInsets.all(10),
+  child: ListView.builder(
+    itemCount: widget.lst.length,
+    itemBuilder: (context, index) {
+      return Padding(
+        padding: const EdgeInsets.all(5),
+        child: Card(
+          child: ListTile(
+            title: Text(widget.lst[index].judul),
+            subtitle: Text(widget.lst[index].nominal.toString()),
+            trailing: Text(widget.lst[index].tipe),
+          ),
+        ),
+      );
+```
+
 # Tugas 7
 
 ## Jelaskan apa yang dimaksud dengan stateless widget dan stateful widget dan jelaskan perbedaan dari keduanya.  
@@ -5,7 +209,7 @@ Stateless widget adalah widget pada flutter yang tidak dapat diubah (immutable) 
 
 ## Sebutkan widget apa saja yang kamu pakai di proyek kali ini dan jelaskan fungsinya.  
 - Text, untuk menampilkan text 'ganjil atau 'genap'.  
-FloatingActionButton, button untuk melakukan increment dan - decrement counter.  
+- FloatingActionButton, button untuk melakukan increment dan - decrement counter.  
 
 ## Apa fungsi dari setState()? Jelaskan variabel apa saja yang dapat terdampak dengan fungsi tersebut.
 Fungsi setState() digunakan bersama dengan statefulWidget pada flutter. Fungsi setState() memberi tahu flutter untuk membangun kembali elemen-elemen pada flutter saat suatu konsisi ditentukan.  
