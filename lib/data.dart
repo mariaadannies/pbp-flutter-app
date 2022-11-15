@@ -68,23 +68,27 @@ class _MyDataPageState extends State<MyDataPage> {
             ],
           ),
         ),
-        body: Container(
-          padding: const EdgeInsets.all(10),
-          child: ListView.builder(
-            itemCount: widget.lst.length,
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.all(5),
-                child: Card(
-                  child: ListTile(
-                    title: Text(widget.lst[index].judul),
-                    subtitle: Text(widget.lst[index].nominal.toString()),
-                    trailing: Text(widget.lst[index].tipe),
-                  ),
+        body: widget.lst.isEmpty
+            ? Center(
+                child: Text('Belum ada data tersimpan.'),
+              )
+            : Container(
+                padding: const EdgeInsets.all(10),
+                child: ListView.builder(
+                  itemCount: widget.lst.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.all(5),
+                      child: Card(
+                        child: ListTile(
+                          title: Text(widget.lst[index].judul),
+                          subtitle: Text(widget.lst[index].nominal.toString()),
+                          trailing: Text(widget.lst[index].tipe),
+                        ),
+                      ),
+                    );
+                  },
                 ),
-              );
-            },
-          ),
-        ));
+              ));
   }
 }
