@@ -1,6 +1,8 @@
 # Tugas 8
 
 ## Jelaskan perbedaan Navigator.push dan Navigator.pushReplacement.
+navigator.push melakukan push rute yang di-push.
+navigator.pushReplacement melakukan push rute baru dan menghapus rute sebelumnya setelah rute baru selesai di load.
 ## Sebutkan widget apa saja yang kamu pakai di proyek kali ini dan jelaskan fungsinya.
 - Center
 - Column
