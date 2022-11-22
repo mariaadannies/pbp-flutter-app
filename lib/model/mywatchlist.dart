@@ -1,110 +1,86 @@
 // To parse this JSON data, do
 //
-//     final myWatchList = myWatchListFromJson(jsonString);
+//    final myWatchlist = myWatchlistFromJson(jsonString);
 
 import 'dart:convert';
 
-List<MyWatchList> myWatchListFromJson(String str) => List<MyWatchList>.from(json.decode(str).map((x) => MyWatchList.fromJson(x)));
+List<MyWatchlist> myWatchlistFromJson(String str) => List<MyWatchlist>.from(
+    json.decode(str).map((x) => MyWatchlist.fromJson(x)));
 
-String myWatchListToJson(List<MyWatchList> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String myWatchlistToJson(List<MyWatchlist> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
-class MyWatchList {
-    MyWatchList({
-        required this.model,
-        required this.pk,
-        required this.fields,
-    });
+class MyWatchlist {
+  MyWatchlist({
+    required this.model,
+    required this.pk,
+    required this.fields,
+  });
 
-    Model? model;
-    int pk;
-    Fields fields;
+  Model? model;
+  int pk;
+  Fields fields;
 
-    factory MyWatchList.fromJson(Map<String, dynamic> json) => MyWatchList(
+  factory MyWatchlist.fromJson(Map<String, dynamic> json) => MyWatchlist(
         model: modelValues.map[json["model"]],
         pk: json["pk"],
         fields: Fields.fromJson(json["fields"]),
-    );
+      );
 
-    Map<String, dynamic> toJson() => {
-        "model": modelValues.reverse[model],
+  Map<String, dynamic> toJson() => {
+        "model": modelValues.reverse![model],
         "pk": pk,
         "fields": fields.toJson(),
-    };
+      };
 }
 
 class Fields {
-    Fields({
-        required this.watched,
-        required this.title,
-        required this.rating,
-        required this.releaseDate,
-        required this.review,
-    });
+  Fields({
+    required this.watched,
+    required this.title,
+    required this.rating,
+    required this.releaseDate,
+    required this.review,
+  });
 
-    Watched? watched;
-    Title? title;
-    int rating;
-    ReleaseDate? releaseDate;
-    Review? review;
+  String watched;
+  String title;
+  int rating;
+  String releaseDate;
+  String review;
 
-    factory Fields.fromJson(Map<String, dynamic> json) => Fields(
-        watched: watchedValues.map[json["watched"]],
-        title: titleValues.map[json["title"]],
+  factory Fields.fromJson(Map<String, dynamic> json) => Fields(
+        watched: json["watched"],
+        title: json["title"],
         rating: json["rating"],
-        releaseDate: releaseDateValues.map[json["release_date"]],
-        review: reviewValues.map[json["review"]],
-    );
+        releaseDate: json["release_date"],
+        review: json["review"],
+      );
 
-    Map<String, dynamic> toJson() => {
-        "watched": watchedValues.reverse[watched],
-        "title": titleValues.reverse[title],
+  Map<String, dynamic> toJson() => {
+        "watched": watched,
+        "title": title,
         "rating": rating,
-        "release_date": releaseDateValues.reverse[releaseDate],
-        "review": reviewValues.reverse[review],
-    };
+        "release_date": releaseDate,
+        "review": review,
+      };
 }
-
-enum ReleaseDate { THE_03032003 }
-
-final releaseDateValues = EnumValues({
-    "03/03/2003": ReleaseDate.THE_03032003
-});
-
-enum Review { MANTAPS }
-
-final reviewValues = EnumValues({
-    "Mantaps": Review.MANTAPS
-});
-
-enum Title { UP }
-
-final titleValues = EnumValues({
-    "Up": Title.UP
-});
-
-enum Watched { YA, TIDAK }
-
-final watchedValues = EnumValues({
-    "Tidak": Watched.TIDAK,
-    "Ya": Watched.YA
-});
 
 enum Model { MYWATCHLIST_MYWATCHLIST }
 
-final modelValues = EnumValues({
-    "mywatchlist.mywatchlist": Model.MYWATCHLIST_MYWATCHLIST
-});
+final modelValues =
+    EnumValues({"mywatchlist.mywatchlist": Model.MYWATCHLIST_MYWATCHLIST});
 
 class EnumValues<T> {
-    late Map<String, T> map;
-    late Map<T, String> reverseMap;
+  Map<String, T> map;
+  Map<T, String>? reverseMap;
 
-    EnumValues(this.map);
+  EnumValues(this.map);
 
-    Map<T, String> get reverse {
-        if (reverseMap == null) {
-            reverseMap = map.map((k, v) => new MapEntry(v, k));
-        }
-        return reverseMap;
+  Map<T, String>? get reverse {
+    if (reverseMap == null) {
+      reverseMap = map.map((k, v) => new MapEntry(v, k));
     }
+    return reverseMap;
+  }
 }

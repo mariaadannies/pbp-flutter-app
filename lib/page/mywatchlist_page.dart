@@ -9,7 +9,18 @@ import '../main.dart';
 
 // Detail Page untuk menampilkan detail data MyWatchList
 class DetailPage extends StatelessWidget {
-  const DetailPage({super.key, required dataMyWatchList});
+  const DetailPage(
+      {super.key,
+      required this.watched,
+      required this.title,
+      required this.rating,
+      required this.releaseDate,
+      required this.review});
+  final String watched;
+  final String title;
+  final int rating;
+  final String releaseDate;
+  final String review;
 
   @override
   Widget build(BuildContext context) {
@@ -21,13 +32,54 @@ class DetailPage extends StatelessWidget {
       body: Center(
         child: Column(
           children: [
-            Text('Detail'),
-            Text(dataMyWatchlist.title),
-            Text('Release Date: ' + dataMyWatchlist.release_date),
-            Text('Rating: ' + dataMyWatchlist.rating),
-            Text('Status: ' + dataMyWatchlist.watched),
-            Text('Review: ' + dataMyWatchlist.review),
-            TextButton(
+            SizedBox(
+              height: 30,
+            ),
+            Text(title,
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+            Row(
+              children: [
+                SizedBox(width: 15, height: 25),
+                Text(
+                  'Release Date: ',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                Text(releaseDate, style: TextStyle(fontSize: 20)),
+              ],
+            ),
+            Row(
+              children: [
+                SizedBox(width: 15, height: 25),
+                Text('Rating: ',
+                    style:
+                        TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                Text(rating.toString(), style: TextStyle(fontSize: 20)),
+              ],
+            ),
+            Row(
+              children: [
+                SizedBox(width: 15, height: 25),
+                Text('Status: ',
+                    style:
+                        TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                Text(watched, style: TextStyle(fontSize: 20)),
+              ],
+            ),
+            Row(
+              children: [
+                SizedBox(width: 15, height: 25),
+                Text('Review: ',
+                    style:
+                        TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              ],
+            ),
+            Row(
+              children: [
+                SizedBox(width: 15, height: 25),
+                Text(review, style: TextStyle(fontSize: 20)),
+              ],
+            ),
+            ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);
               },
@@ -50,7 +102,7 @@ class MyWatchListPage extends StatefulWidget {
 }
 
 class _MyWatchListPageState extends State<MyWatchListPage> {
-  Future<List<MyWatchList>> fetchMyWatchList() async {
+  Future<List<MyWatchlist>> fetchMyWatchList() async {
     var url = Uri.parse('https://pbp-tugas-2.herokuapp.com/mywatchlist/json/');
     var response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -61,10 +113,10 @@ class _MyWatchListPageState extends State<MyWatchListPage> {
     var data = jsonDecode(utf8.decode(response.bodyBytes));
 
     // melakukan konversi data json menjadi object ToDo
-    List<MyWatchList> listMyWatchList = [];
+    List<MyWatchlist> listMyWatchList = [];
     for (var d in data) {
       if (d != null) {
-        listMyWatchList.add(MyWatchList.fromJson(d));
+        listMyWatchList.add(MyWatchlist.fromJson(d));
       }
     }
 
@@ -175,7 +227,16 @@ class _MyWatchListPageState extends State<MyWatchListPage> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => DetailPage(
-                                        dataMyWatchList: snapshot.data![index],
+                                        watched: snapshot
+                                            .data![index].fields.watched,
+                                        title:
+                                            snapshot.data![index].fields.title,
+                                        rating:
+                                            snapshot.data![index].fields.rating,
+                                        releaseDate: snapshot
+                                            .data![index].fields.releaseDate,
+                                        review:
+                                            snapshot.data![index].fields.review,
                                       )),
                             );
                           },
@@ -195,7 +256,7 @@ class _MyWatchListPageState extends State<MyWatchListPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "${snapshot.data![index].title}",
+                                  "${snapshot.data![index].fields.title}",
                                   style: const TextStyle(
                                     fontSize: 18.0,
                                     fontWeight: FontWeight.bold,
