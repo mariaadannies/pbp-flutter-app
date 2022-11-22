@@ -1,3 +1,187 @@
+# Tugas 9
+## Apakah bisa kita melakukan pengambilan data JSON tanpa membuat model terlebih dahulu? Jika iya, apakah hal tersebut lebih baik daripada membuat model sebelum melakukan pengambilan data JSON?  
+m
+## Sebutkan widget apa saja yang kamu pakai di proyek kali ini dan jelaskan fungsinya.  
+m
+## Jelaskan mekanisme pengambilan data dari json hingga dapat ditampilkan pada Flutter.  
+m
+## Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas.
+1. Menambahkan tombol navigasi pada drawer/hamburger untuk ke halaman mywatchlist.
+Menambahkan kode berikut pada drawer
+```
+ListTile(
+  title: const Text('My Watch List'),
+  onTap: () {
+    // Route menu ke halaman form
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+          builder: (context) => MyWatchListPage(
+                lst: widget.lst,
+                addData: widget.addData,
+              )),
+    );
+  },
+),
+```
+
+2. Membuat satu file dart yang berisi model mywatchlist.
+- Membuat file baru pada file mywatchlist.dart
+- Menyalin data JSON pada tugas 3
+- Mengakses situs https://app.quicktype.io/ dan menempelkan data JSON tugas 3
+- Menyalin dan menempelkan kode yang ter-generate pada file mywatchlist.dart
+
+3. Menambahkan halaman mywatchlist yang berisi semua watch list yang ada pada endpoint JSON di Django yang telah kamu deploy ke Heroku sebelumnya (Tugas 3). Pada bagian ini, kamu cukup menampilkan judul dari setiap mywatchlist yang ada.
+- Membuat file mywatchlist_page.dart pada folder lib/page
+- Menambahkan semua impor yang dibutuhkan
+- Membuat Stateful Widget MyWatchListPage
+- Melakukan pengambilan data dari URL https://pbp-tugas-2.herokuapp.com/mywatchlist/json/ menggunakan metode http.get
+- Menampilkan data dengan menambahkan kode berikut pada file mywatchlist_page.dart dan membuat navigasi dari setiap judul watch list ke halaman detail
+```
+body: FutureBuilder(
+  future: fetchMyWatchList(),
+  builder: (context, AsyncSnapshot snapshot) {
+    if (snapshot.data == null) {
+      return const Center(child: CircularProgressIndicator());
+    } else {
+      if (!snapshot.hasData) {
+        return Column(
+          children: const [
+            Text(
+              "Tidak ada List :(",
+              style:
+                  TextStyle(color: Color(0xff59A5D8), fontSize: 20),
+            ),
+            SizedBox(height: 8),
+          ],
+        );
+      } else {
+        return ListView.builder(
+            itemCount: snapshot.data!.length,
+            itemBuilder: (_, index) => GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => DetailPage(
+                              watched: snapshot
+                                  .data![index].fields.watched,
+                              title:
+                                  snapshot.data![index].fields.title,
+                              rating:
+                                  snapshot.data![index].fields.rating,
+                              releaseDate: snapshot
+                                  .data![index].fields.releaseDate,
+                              review:
+                                  snapshot.data![index].fields.review,
+                            )),
+                  );
+                },
+                child: Container(
+                  margin: const EdgeInsets.symmetric(
+                      horizontal: 16, vertical: 12),
+                  padding: const EdgeInsets.all(20.0),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(15.0),
+                      boxShadow: const [
+                        BoxShadow(
+                            color: Colors.black, blurRadius: 2.0)
+                      ]),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "${snapshot.data![index].fields.title}",
+                        style: const TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                )));
+      }
+    }
+  })
+```
+
+4. Menambahkan halaman detail untuk setiap mywatchlist yang ada pada daftar tersebut. Halaman ini menampilkan judul, release date, rating, review, dan status (sudah ditonton/belum).
+- Membuat Stateless Widget pada file mywatchlist_page.dart dan menambahkan kode berikut
+```
+var dataMyWatchlist;
+  return Scaffold(
+    appBar: AppBar(
+      title: Text('Detail'),
+    ),
+    body: Center(
+      child: Column(
+        children: [
+          SizedBox(
+            height: 30,
+          ),
+          Text(title,
+              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+          Row(
+            children: [
+              SizedBox(width: 15, height: 25),
+              Text(
+                'Release Date: ',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              Text(releaseDate, style: TextStyle(fontSize: 20)),
+            ],
+          ),
+          Row(
+            children: [
+              SizedBox(width: 15, height: 25),
+              Text('Rating: ',
+                  style:
+                      TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              Text(rating.toString(), style: TextStyle(fontSize: 20)),
+            ],
+          ),
+          Row(
+            children: [
+              SizedBox(width: 15, height: 25),
+              Text('Status: ',
+                  style:
+                      TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              Text(watched, style: TextStyle(fontSize: 20)),
+            ],
+          ),
+          Row(
+            children: [
+              SizedBox(width: 15, height: 25),
+              Text('Review: ',
+                  style:
+                      TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            ],
+          ),
+          Row(
+            children: [
+              SizedBox(width: 15, height: 25),
+              Text(review, style: TextStyle(fontSize: 20)),
+            ],
+          ),
+        ],
+      ),
+    ),
+  );
+```
+
+5. Menambahkan tombol untuk kembali ke daftar mywatchlist
+- Menambahkan potongan kode berikut pada class Stateless Widget DetailPage
+```
+ElevatedButton(
+  onPressed: () {
+    Navigator.pop(context);
+  },
+  child: Text('Back'),
+),
+```
+
 # Tugas 8
 
 ## Jelaskan perbedaan Navigator.push dan Navigator.pushReplacement.
