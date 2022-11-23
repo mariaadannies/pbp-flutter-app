@@ -1,8 +1,7 @@
 import 'package:counter_7/page/data.dart';
 import 'package:counter_7/page/form.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:counter_7/fetchmywatchlist.dart';
 import 'package:counter_7/model/mywatchlist.dart';
 
 import '../main.dart';
@@ -102,29 +101,27 @@ class MyWatchListPage extends StatefulWidget {
 }
 
 class _MyWatchListPageState extends State<MyWatchListPage> {
-  Future<List<MyWatchlist>> fetchMyWatchList() async {
-    var url = Uri.parse('https://pbp-tugas-2.herokuapp.com/mywatchlist/json/');
-    var response = await http.get(url, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-    });
-
-    // melakukan decode response menjadi bentuk json
-    var data = jsonDecode(utf8.decode(response.bodyBytes));
-
-    // melakukan konversi data json menjadi object ToDo
-    List<MyWatchlist> listMyWatchList = [];
-    for (var d in data) {
-      if (d != null) {
-        listMyWatchList.add(MyWatchlist.fromJson(d));
-      }
-    }
-
-    return listMyWatchList;
-  }
+  late final Future _getMyWatchListAsync;
 
   @override
+  void initState() {
+    super.initState();
+    _getMyWatchListAsync = fetchMyWatchList();
+  }
+
   Widget build(BuildContext context) {
+    Color getColor(Set<MaterialState> states) {
+      const Set<MaterialState> interactiveStates = <MaterialState>{
+        MaterialState.pressed,
+        MaterialState.hovered,
+        MaterialState.focused,
+      };
+      if (states.any(interactiveStates.contains)) {
+        return Colors.red;
+      }
+      return Colors.grey;
+    }
+
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -202,7 +199,7 @@ class _MyWatchListPageState extends State<MyWatchListPage> {
           ),
         ),
         body: FutureBuilder(
-            future: fetchMyWatchList(),
+            future: _getMyWatchListAsync,
             builder: (context, AsyncSnapshot snapshot) {
               if (snapshot.data == null) {
                 return const Center(child: CircularProgressIndicator());
@@ -246,6 +243,12 @@ class _MyWatchListPageState extends State<MyWatchListPage> {
                             padding: const EdgeInsets.all(20.0),
                             decoration: BoxDecoration(
                                 color: Colors.white,
+                                border: Border.all(
+                                  color: snapshot.data![index].fields.isWatched
+                                      ? Colors.blue
+                                      : Colors.red,
+                                  width: 1,
+                                ),
                                 borderRadius: BorderRadius.circular(15.0),
                                 boxShadow: const [
                                   BoxShadow(
@@ -262,6 +265,25 @@ class _MyWatchListPageState extends State<MyWatchListPage> {
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
+                                Checkbox(
+                                    checkColor: Colors.white,
+                                    fillColor:
+                                        MaterialStateProperty.resolveWith(
+                                            getColor),
+                                    value:
+                                        snapshot.data![index].fields.isWatched,
+                                    onChanged: (newValue) {
+                                      setState(() {
+                                        snapshot.data![index].fields.isWatched =
+                                            !snapshot
+                                                .data![index].fields.isWatched;
+                                        snapshot.data![index].fields.isWatched
+                                            ? snapshot.data![index].fields
+                                                .watched = "Ya"
+                                            : snapshot.data![index].fields
+                                                .watched = "Tidak";
+                                      });
+                                    }),
                               ],
                             ),
                           )));

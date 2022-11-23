@@ -1,10 +1,23 @@
 # Tugas 9
 ## Apakah bisa kita melakukan pengambilan data JSON tanpa membuat model terlebih dahulu? Jika iya, apakah hal tersebut lebih baik daripada membuat model sebelum melakukan pengambilan data JSON?  
-m
+Bisa tapi sulitdan tidak praktis untuk dilakukan
+
 ## Sebutkan widget apa saja yang kamu pakai di proyek kali ini dan jelaskan fungsinya.  
-m
+- Scaffold, class pada Flutter yang menyediakan banyak widget
+- Row, widget pada Flutter yang menampilkan widget didalamnya secara horizontal
+- Column, widget pada Flutter yang menampilkan widget didalamnya secara vertical
+- Text, widget pada Flutter yang menampung text
+- Container, widget pada Flutter yang berfungsi membungkus widget lain
+- Drawer, widget yang dapat digunakan oleh pengguna untuk berpindah menuju halaman lain.
+- ElevatedButton, widget yang ditampilkan pada material widget dimana material.elevation nya meningkat ketika button diklik.
+
 ## Jelaskan mekanisme pengambilan data dari json hingga dapat ditampilkan pada Flutter.  
-m
+- Menambahkan dependency http ke proyek untuk bertukar data melalui HTTP request, seperti GET, POST, PUT, dan lain-lain.
+- Membuat model sesuai dengan respons dari data yang berasal dari web service tersebut.
+- Membuat http request ke web service menggunakan dependency http.
+- Mengkonversikan objek yang didapatkan dari web service ke model yang telah kita buat di langkah kedua.
+ - Menampilkan data yang telah dikonversi ke aplikasi dengan FutureBuilder.
+
 ## Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas.
 1. Menambahkan tombol navigasi pada drawer/hamburger untuk ke halaman mywatchlist.
 Menambahkan kode berikut pada drawer

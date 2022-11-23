@@ -41,6 +41,7 @@ class Fields {
     required this.rating,
     required this.releaseDate,
     required this.review,
+    required this.isWatched,
   });
 
   String watched;
@@ -48,6 +49,7 @@ class Fields {
   int rating;
   String releaseDate;
   String review;
+  bool isWatched;
 
   factory Fields.fromJson(Map<String, dynamic> json) => Fields(
         watched: json["watched"],
@@ -55,6 +57,7 @@ class Fields {
         rating: json["rating"],
         releaseDate: json["release_date"],
         review: json["review"],
+        isWatched: json["watched"] == "Ya" ? true : false,
       );
 
   Map<String, dynamic> toJson() => {
